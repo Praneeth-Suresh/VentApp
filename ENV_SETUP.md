@@ -1,9 +1,11 @@
-# NUS Anonymous Feedback MVP - Environment Setup
+# vent. development environment
+
+Use a disposable test project and fictional submissions only. Do not configure this prototype against a production database.
 
 ## Firebase Configuration
 
 1. Create a Firebase project at https://console.firebase.google.com
-2. Enable Firestore Database (test mode initially, then switch to production rules)
+2. Enable Firestore Database in your disposable project. Do not enable open test-mode rules.
 3. Create a service account key:
    - Go to Project Settings → Service Accounts
    - Click "Generate New Private Key"
@@ -11,7 +13,7 @@
 
 4. Add these environment variables to your `.env.local`:
 
-\`\`\`
+```
 NEXT_PUBLIC_FIREBASE_API_KEY=<your-api-key>
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=<your-project>.firebaseapp.com
 NEXT_PUBLIC_FIREBASE_PROJECT_ID=<your-project-id>
@@ -27,44 +29,19 @@ FIREBASE_CREDS_JSON={"type":"service_account",...}
 
 # Cron Security
 CRON_SECRET=your-cron-secret-key
-\`\`\`
+```
 
-## Firestore Security Rules
+## Firestore access
 
-Set these in Firebase Console → Firestore → Rules:
-
-\`\`\`
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    // Public read for submission queries
-    match /submissions/{document=**} {
-      allow read;
-      allow create;
-      allow update, delete: if false;
-    }
-
-    // Admin comments - read only by admin
-    match /admin_comments/{document=**} {
-      allow read, write: if false;
-    }
-
-    // Analytics - read only by admin
-    match /analytics/{document=**} {
-      allow read: if false;
-      allow write: if false;
-    }
-  }
-}
-\`\`\`
+The prototype’s routes use the Firebase client SDK, and their ability to read and write depends on your project’s rules. Do not grant blanket access to make a demo work. A live pilot would need an explicit authorization design and tested, least-privilege rules before accepting real data.
 
 ## Running the Application
 
 ### Development
-\`\`\`bash
-npm install
-npm run dev
-\`\`\`
+```bash
+pnpm install --frozen-lockfile
+pnpm dev
+```
 
 ### Production Deployment to Vercel
 
@@ -79,11 +56,11 @@ npm run dev
 For daily analytics at 12:00 PM UTC:
 
 ### Local Testing
-\`\`\`bash
+```bash
 pip install firebase-admin
 export FIREBASE_CREDS_JSON='{"type":"service_account",...}'
 python scripts/analytics.py
-\`\`\`
+```
 
 ### Production Setup
 - The Vercel Cron will call `/api/cron/daily-analytics` at 12:00 PM UTC
@@ -92,10 +69,9 @@ python scripts/analytics.py
 
 ## Testing the Application
 
-### Run API Tests
-\`\`\`bash
-npm test
-\`\`\`
+### Test with a disposable Firebase project
+
+The package does not define an `npm test` script. The API harness in `tests/api.test.ts` is a standalone integration script that sends write requests to a running app. Do not point it at a production instance or a project with real feedback. The [README walkthrough](README.md#what-to-try) is the simplest supported smoke check.
 
 ### Manual Testing Checklist
 
@@ -122,14 +98,9 @@ npm test
 - [ ] View approved submissions
 - [ ] Add comments to submissions
 
-## Scaling Considerations
+## Scaling considerations
 
-For ~100 submissions/day, this setup is production-ready:
-
-- **Firestore**: Free tier handles ~50K writes/day
-- **Analytics**: Daily batch job runs once at noon
-- **API**: Serverless functions scale automatically
-- **Storage**: Negligible costs at this volume
+Capacity and deployment costs have not been measured. Validate the actual workload and access model before planning a pilot.
 
 ### Future Optimization
 - Add Firestore indexes for query performance
