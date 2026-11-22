@@ -10,10 +10,8 @@ export function DisclaimerSection() {
         <div>
           <h3 className="font-bold text-primary mb-2">Disclaimer</h3>
           <p className="text-muted-foreground">
-            This platform is for anonymous feedback only. All submissions are moderated and analyzed to identify trends
-            and concerns. Your identity is protected and will not be disclosed. Submissions containing hate speech,
-            threats, or harassment will be removed. This tool is designed to improve NUS community experience and is not
-            a crisis service.
+            This is a feedback prototype, not an official NUS reporting or crisis service. Use fictional examples only.
+            Do not include names, contact details, or other information that could identify someone.
           </p>
         </div>
       </div>

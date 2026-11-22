@@ -1,4 +1,6 @@
-# Deployment Guide
+# Deployment Notes
+
+This documents the original prototype configuration. Use a disposable Firebase project and fictional feedback. A deployment is not evidence of production readiness.
 
 ## Pre-Deployment Checklist
 
@@ -13,18 +15,17 @@
 ## Deployment Steps
 
 ### 1. Local Testing
-\`\`\`bash
-npm install
-npm run build
-npm test
-\`\`\`
+```bash
+pnpm install --frozen-lockfile
+pnpm build
+```
 
 ### 2. GitHub Push
-\`\`\`bash
+```bash
 git add .
 git commit -m "Initial MVP deployment"
 git push origin main
-\`\`\`
+```
 
 ### 3. Vercel Deployment
 
